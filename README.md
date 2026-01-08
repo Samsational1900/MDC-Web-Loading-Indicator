@@ -12,7 +12,7 @@ This component is written once using Web Components and can be used in:
 ---      
       
 ## Features      
- Mdc-loading-indicator- ✅ Native Web Component      
+- ✅ Native Web Component      
 - ✅ Works directly in React      
 - ✅ Framework-agnostic      
 - ✅ Shadow DOM–encapsulated styles      
