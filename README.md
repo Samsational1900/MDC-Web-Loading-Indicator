@@ -21,14 +21,14 @@ This component is written once using Web Components and can be used in:
 
 ---
 
-## Demo
+## Usage
 
 ```html
 <script type="module" src="./mdc-loading-indicator.js"></script>
 
 <mdc-loading-indicator size="48"></mdc-loading-indicator>
 
-```react
+```html
 import "./mdc-loading-indicator.js";
 
 export default function App() {
