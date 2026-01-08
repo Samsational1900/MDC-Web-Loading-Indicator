@@ -1,6 +1,6 @@
-# mdc-loading-indicator      
+# MDC-Loading-Indicator For Web      
       
-A lightweight **Material Design–style loading indicator** built as a **Web Component** that works **natively in React and other frameworks**.      
+A mdc-loading-indicator **Material Design–style loading indicator** built as a **Web Component** that works **natively in React and other frameworks**.      
       
 This component is written once using Web Components and can be used in:      
 - Plain HTML      
@@ -12,8 +12,7 @@ This component is written once using Web Components and can be used in:
 ---      
       
 ## Features      
-      
-- ✅ Native Web Component      
+ Mdc-loading-indicator- ✅ Native Web Component      
 - ✅ Works directly in React      
 - ✅ Framework-agnostic      
 - ✅ Shadow DOM–encapsulated styles      
