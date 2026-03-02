@@ -20,7 +20,10 @@ This component is written once using Web Components and can be used in:
 - ✅ Shadow DOM–encapsulated styles      
 - ✅ Zero dependencies      
       
----      
+---    
+
+## Sample
+you can preview this sample from   
       
 ## Usage
 
