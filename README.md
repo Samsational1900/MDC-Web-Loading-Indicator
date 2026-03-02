@@ -36,9 +36,9 @@ HTML
 
 React
 ```jsx
-import "./mdc-loading-indicator.js";
+import LoadingIndicator from "@/react/LoadingIndicator";
 
 export default function App() {
-  return <mdc-loading-indicator size="48" />;
+  return  <LoadingIndicator containerColor="#4E3B7B" indicatorColor="#4E3B7B" />;
 }
 ```

@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import PropTypes from "prop-types";
 import { Box } from "@mui/material";
-import { Color, Solver } from "./ColorSolver";
+import { Color, Solver } from "@/utils/ColorSolver";
 
 /**
  * A customizable Material Design 3 Loading Indicator.
@@ -42,8 +42,8 @@ const solvedFilter = useMemo(() => {
     <Box
       sx={{
         padding: "10px",
-       width: width || "58px", 
-        height: height || "58px",
+       width: width || "38px", 
+        height: height || "38px",
         borderRadius: "50%",
         backgroundColor: isContainedIndicator ? (containerColor || "#C7B3FC") : "transparent",
         display: "flex",
@@ -54,7 +54,7 @@ const solvedFilter = useMemo(() => {
     >
      <Box
         component="img"
-        src="/images/material-loading-indicator.gif"
+        src="/material-loading-indicator.gif"
         alt="Loading..."
         sx={{
           width: "100%", 
