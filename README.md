@@ -23,7 +23,7 @@ This component is written once using Web Components and can be used in:
 ---    
 
 ## Sample
-you can preview this sample from   
+you can preview this sample from https://samsational1900.github.io/MDC-Web-Loading-Indicator
       
 ## Usage
 
