@@ -1,5 +1,5 @@
 import { useState } from "react";
-import LoadingIndicator from "@/react/LoadingIndicator";
+import LoadingIndicator from "@/LoadingIndicator";
 import { Box } from "@mui/material";
 
 function App() {
@@ -19,9 +19,7 @@ function App() {
           justifyContent: "center",
         }}
       >
-        <LoadingIndicator
-  indicatorColor={"#219600"}
-/>
+        <LoadingIndicator />
       </Box>
     </>
   );
