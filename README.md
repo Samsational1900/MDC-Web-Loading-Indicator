@@ -2,6 +2,8 @@
 
 A lightweight, production-ready Material Design–style loading indicator implemented as a native Web Component with an optional React-friendly usage pattern. It applies an accurate CSS `filter` to a spinner asset so a single GIF/SVG can be recolored to any hex value.
 
+**[🌐 View Live Demo](https://samsational1900.github.io/MDC-Web-Loading-Indicator)**
+
 ## TL;DR
 
 * Use the Web Component directly: `import "./mdc-loading-indicator.js"`.
@@ -207,25 +209,3 @@ The solver implementation for converting a hex color to a CSS `filter` is adapte
 * CodePen demo: [https://codepen.io/sosuke/pen/Pjoqqp](https://codepen.io/sosuke/pen/Pjoqqp)
 
 Include the above links and state that portions of the solver are adapted from that work, complying with CC BY-SA terms.
-
----
-
-# Example README snippet for Attribution (copy into your README)
-
-```md
-## Acknowledgements
-
-The color-to-CSS-filter algorithm used to recolor the spinner was adapted from Sosuke's solution:
-
-- https://stackoverflow.com/a/43960991
-- https://codepen.io/sosuke/pen/Pjoqqp
-
-Parts of the solver derive from that work and are used under the attribution requirements of StackOverflow / CC BY-SA. See `ATTRIBUTION.md` for details.
-```
-
----
-
-If you want, the next step I can provide:
-
-* a short `ATTRIBUTION.md` file content that satisfies CC BY-SA requirements, or
-* a suggested `LICENSE` + `NOTICE` layout for including CC BY-SA content inside an MIT-licensed repository.
