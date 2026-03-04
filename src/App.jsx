@@ -1,5 +1,5 @@
 import { useState } from "react";
-import LoadingIndicator from "@/mdc-loading-indicator";
+import "./components/mdc-loading-indicator";
 import { Box } from "@mui/material";
 
 function App() {
@@ -20,9 +20,9 @@ function App() {
         }}
       >
         <mdc-loading-indicator
-      indicator-color="#FF9800"
-      is-contained
-      container-color="#FFF3E0"
+   //   indicator-color="#FF9800"
+     // is-contained
+  //    container-color="#FFF3E0"
     />
       </Box>
     </>
