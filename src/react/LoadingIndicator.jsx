@@ -34,7 +34,7 @@ const LoadingIndicator = memo(({
       return;
     }
 
-    const cacheKey = `f_cache_${hex}`;
+    const cacheKey = `loadiing_indicator_cache_${hex}`;
     const cached = localStorage.getItem(cacheKey);
     if (cached) {
       setSolvedFilter(cached);
