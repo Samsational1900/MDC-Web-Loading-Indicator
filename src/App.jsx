@@ -19,7 +19,7 @@ function App() {
           justifyContent: "center",
         }}
       >
-        <LoadingIndicator containerColor={"#2196f3"} 
+        <LoadingIndicator
   indicatorColor={"#219600"}
 />
       </Box>
