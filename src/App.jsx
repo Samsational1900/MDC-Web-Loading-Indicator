@@ -1,5 +1,5 @@
 import { useState } from "react";
-import LoadingIndicator from "@/LoadingIndicator";
+import LoadingIndicator from "@/mdc-loading-indicator";
 import { Box } from "@mui/material";
 
 function App() {
@@ -19,7 +19,11 @@ function App() {
           justifyContent: "center",
         }}
       >
-        <LoadingIndicator />
+        <mdc-loading-indicator
+      indicator-color="#FF9800"
+      is-contained
+      container-color="#FFF3E0"
+    />
       </Box>
     </>
   );
