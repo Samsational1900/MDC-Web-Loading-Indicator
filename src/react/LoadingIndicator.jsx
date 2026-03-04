@@ -1,58 +1,91 @@
-import React, { useMemo } from "react";
+import React, { memo, useState, useEffect } from 'react';
 import PropTypes from "prop-types";
-import { Box } from "@mui/material";
+import Box from "@mui/material/Box";
 import { Color, Solver } from "@/utils/ColorSolver";
 
-/**
- * A customizable Material Design 3 Loading Indicator.
- * @param {string} containerColor - Background color of the circle.
- * @param {string} indicatorColor - CSS filter string to color the GIF.
- * @param {string|number} customSize - Override responsive sizing.
- * @param {boolean} isContainedIndicator - Whether to show the circular background.
- */
-export default function LoadingIndicator({ 
-  containerColor, 
-  indicatorColor, 
-  width,
-  height,
-  isContainedIndicator = true
-}) {
+// 1. Pre-computed Map: Skip the math for common colors!
+const PRE_COMPUTED_FILTERS = {
+  "ffffff": "brightness(0) invert(100%)",
+  "000000": "brightness(0)",
+  "4e3b7b": "brightness(0) saturate(100%) invert(22%) sepia(9%) saturate(4921%) hue-rotate(221deg) brightness(96%) contrast(85%)",
+};
 
-const solvedFilter = useMemo(() => {
-    // If it's already a filter string or empty, just return it
-    if (!indicatorColor || indicatorColor.includes("invert")) {
-      return indicatorColor;
+// 2. Wrap in memo so parent re-renders don't trigger this logic
+const LoadingIndicator = memo(({ 
+  containerColor = "#C7B3FC", 
+  indicatorColor = "#4E3B7B", 
+  width = "38px", 
+  height = "38px", 
+  isContainedIndicator = true 
+}) => {
+  const defaultFilter = PRE_COMPUTED_FILTERS["4e3b7b"];
+  const [solvedFilter, setSolvedFilter] = useState(defaultFilter);
+
+  useEffect(() => {
+    if (!indicatorColor) return;
+    
+    // Handle already-solved strings
+    if (indicatorColor.includes("invert")) {
+      setSolvedFilter(indicatorColor);
+      return;
     }
 
-    // Assume indicatorColor is a Hex code
-    const hex = indicatorColor.replace('#', '');
-    const r = parseInt(hex.substring(0, 2), 16);
-    const g = parseInt(hex.substring(2, 4), 16);
-    const b = parseInt(hex.substring(4, 6), 16);
+    const hex = indicatorColor.replace('#', '').toLowerCase();
 
-    const color = new Color(r, g, b);
-    const solver = new Solver(color);
-    const result = solver.solve();
+    // Strategy A: Check Pre-computed Map (Fastest)
+    if (PRE_COMPUTED_FILTERS[hex]) {
+      setSolvedFilter(PRE_COMPUTED_FILTERS[hex]);
+      return;
+    }
 
-    // Your solver returns "filter: invert(...)"; we only need the value
-    return result.filter.replace('filter: ', '').replace(';', '');
+    // Strategy B: Check LocalStorage (Fast)
+    const cacheKey = `f_cache_${hex}`;
+    const cached = localStorage.getItem(cacheKey);
+    if (cached) {
+      setSolvedFilter(cached);
+      return;
+    }
+
+    // Strategy C: Solve (Heavy - Offloaded)
+    const calculate = setTimeout(() => {
+      try {
+        const r = parseInt(hex.substring(0, 2), 16);
+        const g = parseInt(hex.substring(2, 4), 16);
+        const b = parseInt(hex.substring(4, 6), 16);
+
+        // Basic validation to prevent solver crash
+        if (isNaN(r) || isNaN(g) || isNaN(b)) return;
+
+        const color = new Color(r, g, b);
+        const solver = new Solver(color);
+        const result = solver.solve();
+        const filterValue = result.filter.replace('filter: ', '').replace(';', '');
+
+        localStorage.setItem(cacheKey, filterValue);
+        setSolvedFilter(filterValue);
+      } catch (e) {
+        console.error("Samsational Solver Error:", e);
+      }
+    }, 50); // Small delay to prioritize UI frame
+
+    return () => clearTimeout(calculate);
   }, [indicatorColor]);
-  
+
   return (
     <Box
       sx={{
         padding: "10px",
-       width: width || "38px", 
-        height: height || "38px",
+        width, height,
         borderRadius: "50%",
-        backgroundColor: isContainedIndicator ? (containerColor || "#C7B3FC") : "transparent",
+        backgroundColor: isContainedIndicator ? containerColor : "transparent",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+        transition: "background-color 0.3s ease", // Optimized transition
+        willChange: "filter", // Tells the browser to prep the GPU
       }}
     >
-     <Box
+      <Box
         component="img"
         src="/material-loading-indicator.gif"
         alt="Loading..."
@@ -60,19 +93,14 @@ const solvedFilter = useMemo(() => {
           width: "100%", 
           height: "100%",
           objectFit: "contain",
+          filter: solvedFilter,
           pointerEvents: "none",
-          userSelect: "none",
-          filter: solvedFilter || "brightness(0) saturate(100%) invert(24%) sepia(9%) saturate(3907%) hue-rotate(217deg) brightness(96%) contrast(89%)",
-           }}
+        }}
       />
     </Box>
   );
-}
+});
 
-LoadingIndicator.propTypes = {
-  containerColor: PropTypes.string,
-  indicatorColor: PropTypes.string,
-  width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  isContainedIndicator: PropTypes.bool,
-};
+LoadingIndicator.displayName = "LoadingIndicator";
+
+export default LoadingIndicator;
