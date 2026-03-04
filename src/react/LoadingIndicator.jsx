@@ -3,20 +3,17 @@ import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
 import { Color, Solver } from "@/utils/ColorSolver";
 
-// 1. Pre-computed Map: Skip the math for common colors!
 const PRE_COMPUTED_FILTERS = {
   "ffffff": "brightness(0) invert(100%)",
   "000000": "brightness(0)",
   "4e3b7b": "brightness(0) saturate(100%) invert(22%) sepia(9%) saturate(4921%) hue-rotate(221deg) brightness(96%) contrast(85%)",
 };
 
-// 2. Wrap in memo so parent re-renders don't trigger this logic
 const LoadingIndicator = memo(({ 
   containerColor = "#C7B3FC", 
   indicatorColor = "#4E3B7B", 
-  width = "38px", 
-  height = "38px", 
-  isContainedIndicator = true 
+  isContainedIndicator = true,
+  sx = {} 
 }) => {
   const defaultFilter = PRE_COMPUTED_FILTERS["4e3b7b"];
   const [solvedFilter, setSolvedFilter] = useState(defaultFilter);
@@ -32,13 +29,11 @@ const LoadingIndicator = memo(({
 
     const hex = indicatorColor.replace('#', '').toLowerCase();
 
-    // Strategy A: Check Pre-computed Map (Fastest)
     if (PRE_COMPUTED_FILTERS[hex]) {
       setSolvedFilter(PRE_COMPUTED_FILTERS[hex]);
       return;
     }
 
-    // Strategy B: Check LocalStorage (Fast)
     const cacheKey = `f_cache_${hex}`;
     const cached = localStorage.getItem(cacheKey);
     if (cached) {
@@ -46,7 +41,6 @@ const LoadingIndicator = memo(({
       return;
     }
 
-    // Strategy C: Solve (Heavy - Offloaded)
     const calculate = setTimeout(() => {
       try {
         const r = parseInt(hex.substring(0, 2), 16);
@@ -64,7 +58,7 @@ const LoadingIndicator = memo(({
         localStorage.setItem(cacheKey, filterValue);
         setSolvedFilter(filterValue);
       } catch (e) {
-        console.error("Samsational Solver Error:", e);
+        console.error("Solver Error:", e);
       }
     }, 50); // Small delay to prioritize UI frame
 
@@ -73,17 +67,20 @@ const LoadingIndicator = memo(({
 
   return (
     <Box
-      sx={{
-        padding: "10px",
-        width, height,
-        borderRadius: "50%",
-        backgroundColor: isContainedIndicator ? containerColor : "transparent",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        transition: "background-color 0.3s ease", // Optimized transition
-        willChange: "filter", // Tells the browser to prep the GPU
-      }}
+      sx={[
+        {
+          padding: "10px",
+          width: 38,
+          height: 38,
+          borderRadius: "50%",
+          backgroundColor: isContainedIndicator ? containerColor : "transparent",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          transition: "background-color 0.3s ease",
+        },
+        ...(Array.isArray(sx) ? sx : [sx]),
+      ]}
     >
       <Box
         component="img"
@@ -95,6 +92,7 @@ const LoadingIndicator = memo(({
           objectFit: "contain",
           filter: solvedFilter,
           pointerEvents: "none",
+          willChange: "filter",
         }}
       />
     </Box>
