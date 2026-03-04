@@ -2,7 +2,7 @@
 
 A lightweight, production-ready Material Design–style loading indicator implemented as a native Web Component with an optional React-friendly usage pattern. It applies an accurate CSS `filter` to a spinner asset so a single GIF/SVG can be recolored to any hex value.
 
-**[🌐 View Live Demo](https://samsational1900.github.io/MDC-Web-Loading-Indicator)**
+**[🌐 View Live Demo](https://samsational1900.github.io/MDC-Web-Loading-Indicator/dist/)**
 
 ## TL;DR
 
