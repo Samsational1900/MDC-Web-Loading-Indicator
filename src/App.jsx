@@ -19,11 +19,7 @@ function App() {
           justifyContent: "center",
         }}
       >
-        <mdc-loading-indicator
-   //   indicator-color="#FF9800"
-     // is-contained
-  //    container-color="#FFF3E0"
-    />
+        <mdc-loading-indicator />
       </Box>
     </>
   );

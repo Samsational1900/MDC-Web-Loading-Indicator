@@ -1,85 +1,231 @@
 # MDC-Web-Loading-Indicator
 
-> A lightweight, highly customizable Material Design–style loading indicator.
+A lightweight, production-ready Material Design–style loading indicator implemented as a native Web Component with an optional React-friendly usage pattern. It applies an accurate CSS `filter` to a spinner asset so a single GIF/SVG can be recolored to any hex value.
 
-This project provides a high-performance loading indicator available as both a **Native Web Component** and a **React Component**. It uses an intelligent CSS filter solver to apply any hex color to the underlying asset dynamically.
+## TL;DR
 
-**[🌐 View Live Demo](https://samsational1900.github.io/MDC-Web-Loading-Indicator)**
-
----
-
-## ✨ Features
-
-* **Dual-Implementation:** Use the Native Web Component for any framework (Vue, Svelte, Vanilla) or the optimized React version.
-* **Dynamic Coloring:** Just pass a hex code (e.g., `#4E3B7B`) and the internal `ColorSolver` handles the rest.
-* **Performance Optimized:** Includes pre-computed filters for common colors and `localStorage` caching for custom ones.
-* **Zero Dependencies:** The Web Component is completely self-contained.
-* **Shadow DOM:** Encapsulated styles that won't leak into your app.
+* Use the Web Component directly: `import "./mdc-loading-indicator.js"`.
+* For React (Vite), import the module for side effects and use `<mdc-loading-indicator ... />` in JSX.
+* The component calculates and caches CSS `filter` values (memory + `localStorage`) for fast, deterministic recoloring.
+* Default behavior: `is-contained` is **true** (shows circular background) unless explicitly set to `"false"`.
 
 ---
 
-## 🚀 Installation
+# Features
 
-1. Clone the repository.
-2. Ensure `material-loading-indicator.gif` is placed in your public/assets folder.
-3. Import the version you need.
+* Native Web Component (framework-agnostic)
+* React-compatible (use as a custom element)
+* Dynamic recoloring via a color-to-filter solver
+* Precomputed common colors + in-memory and `localStorage` caching
+* Shadow DOM encapsulation
+* Small, zero-runtime-dependency footprint
+* Accessibility attributes set by default (`role="status"`, `aria-live="polite"`, `aria-label="Loading"`)
 
 ---
 
-## 🛠 Usage
+# Installation
 
-### 1. Web Component (Vanilla JS / HTML / Any Framework)
+Clone the repository and install project dependencies (if you’re using the source):
 
-Ideal for projects where you want minimal overhead or are not using React.
+```bash
+git clone <repo-url>
+cd MDC-Web-Loading-Indicator
+npm install
+```
+
+**Asset placement options**
+
+1. Bundle asset (recommended for production builds with Vite/webpack):
+
+   * Place spinner in `src/assets` and import it in `mdc-loading-indicator.js`:
+
+     ```js
+     import loadingIndicator from "@/assets/material-loading-indicator.gif";
+     ```
+   * This ensures hashed filenames and proper cache-busting.
+
+2. Public folder:
+
+   * Put `material-loading-indicator.gif` in your `public` folder and ensure `DEFAULT_SRC` points to `"/material-loading-indicator.gif"`.
+
+---
+
+# Usage
+
+## Web Component (Vanilla / Any Framework)
+
+Import the module once (it registers the element globally).
 
 ```html
 <script type="module" src="./mdc-loading-indicator.js"></script>
 
-<mdc-loading-indicator 
-  indicator-color="#4E3B7B" 
-  container-color="#C7B3FC" 
-  contained>
-</mdc-loading-indicator>
-
+<mdc-loading-indicator
+  indicator-color="#4E3B7B"
+  container-color="#C7B3FC"
+  is-contained
+></mdc-loading-indicator>
 ```
 
----
+## React (Vite / CRA)
 
-### 2. React Component
-
-A memoized Material-UI (MUI) compatible wrapper for React applications.
+Import the module for side effects and then use the custom element in JSX.
 
 ```jsx
-<script type="module" src="./mdc-loading-indicator.js"></script>
+import "./mdc-loading-indicator.js";
 
-function App() {
+export default function App() {
   return (
-    <mdc-loading-indicator
-      indicator-color="#FF9800"
-      is-contained
-      container-color="#FFF3E0"
-    />
+    <div>
+      <mdc-loading-indicator
+        indicator-color="#FF9800"
+        is-contained
+        container-color="#FFF3E0"
+      />
+    </div>
   );
 }
-
 ```
----
 
-**Attributes:**
-| Attribute | Description | Default |
-| :--- | :--- | :--- |
-| `indicator-color` | Hex color for the moving indicator | `#4E3B7B` |
-| `container-color` | Hex color for the circular background | `#C7B3FC` |
-| `is-contained` | Boolean attribute to show/hide background | `false` |
+If using TypeScript with JSX, add intrinsic element typings:
 
----
-
-## 🧠 How it Works: The Color Solver
-
-Since the indicator is a `.gif`, changing its color isn't as simple as `fill: red`. This library uses a `ColorSolver` that:
-
-1. Takes your desired **Hex** value.
-2. Calculates the necessary CSS `filter` (invert, sepia, saturate, etc.) to match that color.
-3. Caches the result in `localStorage` so the calculation only happens once per color.
+```ts
+declare namespace JSX {
+  interface IntrinsicElements {
+    "mdc-loading-indicator": any;
+  }
+}
+```
 
 ---
+
+# API — Attributes
+
+| Attribute         |                                          Type |     Default | Description                                                                                                     |
+| ----------------- | --------------------------------------------: | ----------: | --------------------------------------------------------------------------------------------------------------- |
+| `indicator-color` | `string` (hex `#rrggbb` or CSS filter string) |   `#4E3B7B` | Target color for the moving indicator. If a full CSS filter string is provided, the solver is skipped.          |
+| `container-color` |                                `string` (hex) |   `#C7B3FC` | Background circle color when `is-contained` is active.                                                          |
+| `is-contained`    |                             boolean attribute |      `true` | When present (or absent) the container is shown. Set to `is-contained="false"` to hide the circular background. |
+| `aria-label`      |                                      `string` | `"Loading"` | Accessibility label; defaults to `"Loading"`.                                                                   |
+
+---
+
+# Theming and Styling
+
+The component uses a CSS custom property for the container background:
+
+* `--container-color` is set internally. Override via inline style or a parent stylesheet if required.
+
+Sizing:
+
+* Use inline styles on the element or wrap it to control dimensions. Example:
+
+```html
+<mdc-loading-indicator style="width:20px;height:20px;padding:0" />
+```
+
+---
+
+# Performance & Caching
+
+* Precomputed filters for common colors avoid solver work on first render.
+* Solver results are cached in-memory and persisted to `localStorage` keyed by hex color.
+* Debounced calculation prevents thrash when attributes change rapidly.
+* Optionally: move the solver to a Web Worker for heavy-load scenarios.
+
+---
+
+# Accessibility
+
+* The component sets `role="status"` and `aria-live="polite"` by default.
+* Provide `aria-label` if a more descriptive status is required:
+
+  ```html
+  <mdc-loading-indicator aria-label="Uploading file" />
+  ```
+
+---
+
+# Packaging & Publishing Notes
+
+* Keep the Web Component entry as an ES module (`module` field in `package.json`) so consumers can import it directly.
+* Bundle assets into the npm package or document clearly that consumers must provide the spinner asset (and where to place it).
+* Provide both an ES module and a UMD build if you expect non-ESM consumers.
+
+Suggested `package.json` fields:
+
+```json
+{
+  "name": "mdc-web-loading-indicator",
+  "version": "x.y.z",
+  "main": "dist/mdc-loading-indicator.umd.js",
+  "module": "dist/mdc-loading-indicator.esm.js",
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "LICENSE"
+  ]
+}
+```
+
+---
+
+# Development & Tests
+
+* Run dev server:
+
+  ```bash
+  npm run dev
+  ```
+* Build:
+
+  ```bash
+  npm run build
+  ```
+* Add unit tests for:
+
+  * Attribute change behavior
+  * Solver cache read/write
+  * Accessibility attributes
+
+---
+
+# Contributing
+
+* Fork the repo and submit pull requests.
+* Follow a small, focused PR per feature/bug.
+* Include tests and update `CHANGELOG.md`.
+* Use semantic commits and keep changes scoped.
+
+---
+
+# Acknowledgements
+
+The solver implementation for converting a hex color to a CSS `filter` is adapted from work by Sosuke:
+
+* StackOverflow answer: [https://stackoverflow.com/a/43960991](https://stackoverflow.com/a/43960991)
+* CodePen demo: [https://codepen.io/sosuke/pen/Pjoqqp](https://codepen.io/sosuke/pen/Pjoqqp)
+
+Include the above links and state that portions of the solver are adapted from that work, complying with CC BY-SA terms.
+
+---
+
+# Example README snippet for Attribution (copy into your README)
+
+```md
+## Acknowledgements
+
+The color-to-CSS-filter algorithm used to recolor the spinner was adapted from Sosuke's solution:
+
+- https://stackoverflow.com/a/43960991
+- https://codepen.io/sosuke/pen/Pjoqqp
+
+Parts of the solver derive from that work and are used under the attribution requirements of StackOverflow / CC BY-SA. See `ATTRIBUTION.md` for details.
+```
+
+---
+
+If you want, the next step I can provide:
+
+* a short `ATTRIBUTION.md` file content that satisfies CC BY-SA requirements, or
+* a suggested `LICENSE` + `NOTICE` layout for including CC BY-SA content inside an MIT-licensed repository.
