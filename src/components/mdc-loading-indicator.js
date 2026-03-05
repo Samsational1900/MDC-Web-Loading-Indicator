@@ -1,4 +1,4 @@
-import { Color, Solver } from "@/utils/ColorSolver";
+import { Color, Solver } from "@/utils/hexToCssFilter";
 import loadingIndicator from "@/assets/material-loading-indicator.gif";
 
 const DEFAULT_INDICATOR_COLOR = "#4E3B7B";
